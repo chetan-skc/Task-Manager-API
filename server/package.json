@@ -1,0 +1,21 @@
+{
+  "name": "Task-Manager-API",
+  "version": "1.0.0",
+  "description": "A backend API using Express.js and MongoDB to facilitate the management of tasks and subtasks for users within an application.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.19.2",
+    "express-winston": "^4.2.0",
+    "mongoose": "^8.5.1",
+    "nodemon": "^3.1.4",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.13.1",
+    "yamljs": "^0.3.0"
+  }
+}
