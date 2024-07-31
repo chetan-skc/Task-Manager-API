@@ -1,0 +1,216 @@
+openapi: 3.0.0
+info:
+  title: Task Manager API
+  version: 1.0.0
+  description: A backend API using Express.js and MongoDB to facilitate the management of tasks and subtasks for users within an application.
+paths:
+  /tasks/{username}:
+    get:
+      summary: Fetch all tasks assigned to a user
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successfully retrieved tasks list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+        "404":
+          description: User not found
+        "500":
+          description: Server error occurred
+  /tasks:
+    post:
+      summary: Add a new task to the system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - subject
+                - deadline
+                - status
+              properties:
+                username:
+                  type: string
+                subject:
+                  type: string
+                deadline:
+                  type: string
+                  format: date
+                status:
+                  type: string
+                subtasks:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Subtask"
+      responses:
+        "201":
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "500":
+          description: Server error occurred
+  /tasks/{taskId}:
+    put:
+      summary: Modify details of an existing task
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - subject
+                - deadline
+                - status
+              properties:
+                subject:
+                  type: string
+                deadline:
+                  type: string
+                  format: date
+                status:
+                  type: string
+      responses:
+        "200":
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          description: Task or user not found
+        "500":
+          description: Server error occurred
+    delete:
+      summary: Soft delete a task
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Task successfully soft deleted
+        "404":
+          description: User or task not found
+        "500":
+          description: Server error occurred
+  /tasks/{taskId}/subtasks:
+    get:
+      summary: Retrieve all subtasks for a specific task
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of subtasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Subtask"
+        "404":
+          description: User or task not found
+        "500":
+          description: Server error occurred
+    put:
+      summary: Update multiple subtasks for a specific task
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - subtasks
+              properties:
+                subtasks:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Subtask"
+      responses:
+        "200":
+          description: Subtasks updated
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Subtask"
+        "404":
+          description: User or task not found
+        "500":
+          description: Server error occurred
+components:
+  schemas:
+    Task:
+      type: object
+      required:
+        - subject
+        - deadline
+        - status
+      properties:
+        _id:
+          type: string
+        subject:
+          type: string
+        deadline:
+          type: string
+          format: date
+        status:
+          type: string
+        subtasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/Subtask"
+        deleted:
+          type: boolean
+    Subtask:
+      type: object
+      required:
+        - subject
+        - deadline
+        - status
+      properties:
+        _id:
+          type: string
+        subject:
+          type: string
+        deadline:
+          type: string
+          format: date
+        status:
+          type: string
+        deleted:
+          type: boolean
